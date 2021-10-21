@@ -1,0 +1,42 @@
+hr {
+	@apply border border-gray-800 dark:border-white;
+}
+
+html {
+	@apply text-gray-800 dark:text-gray-50;
+	@apply bg-white dark:bg-gray-800;
+}
+
+input {
+	@apply text-gray-50 dark:text-gray-800;
+	@apply bg-gray-700 dark:bg-white;
+}
+
+button {
+	@apply font-bold px-2 py-2 rounded;
+	@apply text-gray-50 dark:text-gray-800;
+	@apply bg-gray-800 dark:bg-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50;
+}
+
+a {
+	text-decoration: underline;
+}
+
+button:disabled {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
+main {
+	@apply container mx-auto px-2;
+}
+
+h1 {
+	@apply text-center text-2xl my-8;
+}
+h2 {
+	@apply text-xl my-4;
+}
+h3 {
+	@apply text-lg my-3;
+}

@@ -1,0 +1,171 @@
+<script context="module" lang="ts">
+	export const prerender = true;
+</script>
+
+<script lang="ts">
+	import OnlyConnected from '$lib/components/OnlyConnected.svelte';
+	import { variables } from '$lib/modules/variables';
+	import { self } from '$lib/modules/wallet';
+	import { page } from '$app/stores';
+
+	let instagramUsername;
+	let code = page.query?.code || '';
+
+	enum VerificationStep {
+		VERIFY,
+		REQUEST
+	}
+
+	// let step = VerificationStep.REQUEST;
+	let step = code ? VerificationStep.REQUEST : VerificationStep.VERIFY;
+
+	let result;
+	let errorMessage;
+	let loadingRequest = false;
+	async function requestVC() {
+		try {
+			loadingRequest = true;
+			const response = await fetch(`${variables.IDENTITY_LINK_URL}/api/v0/confirm-instagram`, {
+				method: 'post',
+				body: JSON.stringify({ jws: '', code })
+			});
+			if (!response.ok) {
+				errorMessage = `An error has occured: ${response.status} status code`;
+				throw new Error(errorMessage);
+			}
+
+			result = response.json();
+			console.log(result);
+		} catch (err) {
+			console.error(err);
+			errorMessage = err;
+		} finally {
+			loadingRequest = false;
+		}
+	}
+</script>
+
+<svelte:head>
+	<title>Home</title>
+</svelte:head>
+
+<main>
+	<h1>
+		Verify your Instagram account through <a
+			href="https://github.com/ceramicstudio/identitylink-services"
+			rel="external noopener"
+			target="_blank">Identity Link Services</a
+		>
+	</h1>
+
+	<OnlyConnected>
+		<p>Your DID: <b>{$self.id}</b></p>
+
+		<section>
+			{#if step == VerificationStep.VERIFY}
+				<div class="verify">
+					<label for="instagram-handle" />
+					<input
+						type="text"
+						name="instagram-handle"
+						id="instagram-handle"
+						placeholder="Instagram's handle e.g. wallkanda"
+						bind:value={instagramUsername}
+					/>
+					<a
+						href="{variables.IDENTITY_LINK_URL}/api/v0/request-instagram?did={$self.id}&username={instagramUsername}"
+					>
+						Verify on Instagram</a
+					>
+				</div>
+			{:else if step == VerificationStep.REQUEST}
+				<div class="request">
+					<p>
+						You successfully authenticated on <b>Instagram</b>, now generate the proof by clicking
+						on the following button:
+					</p>
+					<button on:click={requestVC}>
+						<div class="generate-button-content">
+							{#if loadingRequest}
+								<svg
+									class="animate-spin -ml-1 mr-3 h-5 w-5 text-white dark:text-black"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+								>
+									<circle
+										class="opacity-25"
+										cx="12"
+										cy="12"
+										r="10"
+										stroke="currentColor"
+										stroke-width="4"
+									/>
+									<path
+										class="opacity-75"
+										fill="currentColor"
+										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+									/>
+								</svg>
+								<p>Generating...</p>
+							{:else}
+								Generate Verifiable Credential
+							{/if}
+						</div>
+					</button>
+
+					{#if result}
+						<p />
+					{/if}
+					{#if errorMessage}
+						<p class="error">{errorMessage}</p>
+					{/if}
+				</div>
+			{/if}
+		</section>
+	</OnlyConnected>
+</main>
+
+<style lang="postcss">
+	main {
+		@apply container;
+	}
+
+	section {
+		@apply my-4;
+	}
+
+	input {
+		@apply rounded py-1 px-1;
+	}
+
+	button {
+		@apply font-bold px-2 py-2 rounded;
+		@apply text-gray-50 dark:text-gray-800;
+		@apply bg-gray-800 dark:bg-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50;
+	}
+
+	.verify {
+		@apply grid gap-4 items-center justify-center;
+	}
+
+	.request {
+		@apply flex flex-col space-y-4 items-center;
+		@apply text-center;
+	}
+
+	.verify a {
+		@apply font-bold px-2 py-2 rounded;
+		@apply text-gray-50 dark:text-gray-800;
+		@apply bg-gray-800 dark:bg-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50;
+		text-decoration: none;
+		@apply text-center;
+	}
+	.generate-button-content {
+		@apply flex flex-row items-center;
+	}
+
+	.error {
+		@apply text-red-500;
+	}
+</style>
