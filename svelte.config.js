@@ -19,7 +19,12 @@ const config = {
 			pages: 'build',
 			assets: 'build',
 			fallback: null
-		})
+		}),
+		vite: {
+			ssr: {
+				noExternal: ['@self.id/web']
+			}
+		}
 	}
 };
 

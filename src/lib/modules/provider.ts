@@ -1,11 +1,12 @@
 import { ethers } from 'ethers';
 import { variables } from './variables';
-import { EthereumAuthProvider, SelfID } from '@self.id/web';
+
+import * as pkg from '@self.id/web';
+const { EthereumAuthProvider, SelfID, WebClient } = pkg;
 // import type { EthereumProvider } from '@self.id/web';
 // import type { Account as AlsoKnownAsAccount } from '@datamodels/identity-accounts-web';
 // import type { BasicProfile } from '@datamodels/identity-profile-basic';
 // import { PublicID } from '@self.id/core';
-import { WebClient } from '@self.id/web';
 
 let self = null;
 let ethereumProvider = null;
