@@ -1,6 +1,22 @@
 {
-	"name": "ceramic-verified-artist",
+	"name": "ceramic-identitylink-instagram-example-website",
 	"version": "0.0.1",
+	"author": "Anthony Graignic",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/anthonygraignic/ceramic-identitylink-instagram-example-website.git"
+	},
+	"bugs": {
+		"url": "https://github.com/anthonygraignic/ceramic-identitylink-instagram-example-website/issues"
+	},
+	"keywords": [
+		"ceramic",
+		"self.id",
+		"instagram",
+		"did",
+		"Verifiable Credential"
+	],
 	"scripts": {
 		"ceramic": "ceramic daemon",
 		"dev": "svelte-kit dev -p 3001",
@@ -15,6 +31,7 @@
 		"@datamodels/identity-accounts-crypto": "^0.1.2",
 		"@datamodels/identity-accounts-web": "^0.1.2",
 		"@datamodels/identity-profile-basic": "^0.1.2",
+		"@sveltejs/adapter-static": "^1.0.0-next.20",
 		"@sveltejs/kit": "next",
 		"@typescript-eslint/eslint-plugin": "^4.33.0",
 		"@typescript-eslint/parser": "^4.33.0",
