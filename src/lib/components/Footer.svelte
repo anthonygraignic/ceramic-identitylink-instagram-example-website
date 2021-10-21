@@ -11,9 +11,7 @@
 				with
 			</p>
 			<a href="https://ceramic.network/" rel="external noopener" target="_blank">
-				<figure>
-					<img src="logo-ceramic.svg" alt="Ceramic" />
-				</figure>
+				<img src="logo-ceramic.png" alt="Ceramic" class="logo" />
 			</a>
 		</div>
 		<div class="footer__socials">
@@ -36,8 +34,8 @@
 		/* @apply grid space-x-6 lg:grid-cols-4 md:grid-cols-2 grid-cols-1; */
 	}
 
-	figure {
-		width: 110px;
+	.logo {
+		height: 30px;
 	}
 
 	.footer__brand {
