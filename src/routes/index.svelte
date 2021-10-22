@@ -7,10 +7,19 @@
 	import { variables } from '$lib/modules/variables';
 	import { self, did } from '$lib/modules/wallet';
 	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
 
 	let instagramUsername;
-	let code = $page.query.get('code') || '';
-	let state = $page.query.get('state') || '';
+	const code = $page.query.get('code') || '';
+	// remove '#_' additional at end of URI (challengeCode is only alpha numeric, no special char so it's safe!)
+	// https://developers.facebook.com/docs/instagram-basic-display-api/guides/getting-access-tokens-and-permissions/
+	let state = $page.query.get('state')?.replace('#_', '') || '';
+
+	console.log(state);
+
+	const fbLoginError = $page.query.get('error');
+	const fbLoginErrorReason = $page.query.get('error_reason');
+	const fbLoginErrorDescription = $page.query.get('error_description');
 
 	enum VerificationStep {
 		VERIFY,
@@ -24,22 +33,37 @@
 	let errorMessage;
 	let loadingRequest = false;
 
+	onMount(() => {
+		if (fbLoginError) {
+			errorMessage = `Facebook Login Error: ${fbLoginError}, ${fbLoginErrorReason}, ${fbLoginErrorDescription}`;
+		}
+	});
+
 	async function confirmInstagram() {
 		try {
 			loadingRequest = true;
 
 			const jws = await $did.createJWS({ challengeCode: state });
+			console.log(jws);
 
 			const response = await fetch(`${variables.IDENTITY_LINK_URL}/api/v0/confirm-instagram`, {
 				method: 'post',
-				body: JSON.stringify({ jws, code })
+				body: JSON.stringify({ jws: jws, code })
 			});
 			if (!response.ok) {
-				errorMessage = `An error has occured: ${response.status} status code`;
+				let serverErrorMessage = '';
+				try {
+					result = await response.json();
+					console.log(result);
+					serverErrorMessage = result.message;
+				} catch (err) {
+					console.log(err);
+				}
+				errorMessage = `There was a problem: ${response.status} status code, ${serverErrorMessage}`;
 				throw new Error(errorMessage);
 			}
 
-			result = response.json();
+			result = await response.json();
 			console.log(result);
 		} catch (err) {
 			console.error(err);
@@ -51,7 +75,7 @@
 </script>
 
 <svelte:head>
-	<title>Home</title>
+	<title>Ceramic Identity Link - Instagram</title>
 </svelte:head>
 
 <main>
