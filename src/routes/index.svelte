@@ -79,19 +79,43 @@
 </svelte:head>
 
 <main>
-	<h1>
-		Verify your Instagram account through <a
-			href="https://github.com/ceramicstudio/identitylink-services"
-			rel="external noopener"
-			target="_blank">Identity Link Services</a
-		>
-	</h1>
+	<section>
+		<h1>
+			Verify your Instagram account through <a
+				href="https://github.com/ceramicstudio/identitylink-services"
+				rel="external noopener"
+				target="_blank">Identity Link Services</a
+			>
+		</h1>
+
+		<p>
+			This project is an example of how you can issue a <a
+				href="https://www.w3.org/TR/vc-data-model/"
+				rel="external noopener"
+				target="_blank">verifiable credential</a
+			>
+			that link a decentralized identifier (DID) to your Instagram account on
+			<a href="https://ceramic.network/" rel="external noopener" target="_blank">Ceramic network</a
+			>.
+		</p>
+
+		<h2>Instructions:</h2>
+		<ol class="instructions">
+			<li>Connect with Metamask and 3ID</li>
+			<li>
+				Click on the button to authorize our app to access your Instagram account (you will be
+				redirected to Instagram Log In).
+			</li>
+			<li>Authorize our app (read-only access), you will be redirected to this same page.</li>
+			<li>Connect again and generate your verifiable credential by clicking on the button</li>
+		</ol>
+	</section>
 
 	<OnlyConnected>
-		<p>Your DID: <b>{$self.id}</b></p>
-
 		<section>
 			{#if step == VerificationStep.VERIFY}
+				<h2>Verify</h2>
+				<p>Your DID: <b>{$self.id}</b></p>
 				<div class="verify">
 					<label for="instagram-handle" />
 					<input
@@ -108,11 +132,14 @@
 					>
 				</div>
 			{:else if step == VerificationStep.CONFIRM}
+				<h2>Confirm</h2>
+
+				<p>
+					You successfully authenticated on <b>Instagram</b> 🥳🥳🥳, now generate the proof by clicking
+					on the following button:
+				</p>
+
 				<div class="confirm">
-					<p>
-						You successfully authenticated on <b>Instagram</b> 🥳🥳🥳, now generate the proof by clicking
-						on the following button:
-					</p>
 					<button on:click={confirmInstagram}>
 						<div class="generate-button-content">
 							{#if loadingRequest}
@@ -142,11 +169,13 @@
 							{/if}
 						</div>
 					</button>
-
-					{#if result}
-						<p />
-					{/if}
 				</div>
+				<p>Your DID: <b>{$self.id}</b></p>
+				<p>Your challenge code: <b>{state}</b></p>
+
+				{#if result}
+					<p />
+				{/if}
 			{/if}
 		</section>
 	</OnlyConnected>
@@ -164,8 +193,8 @@
 		@apply my-4;
 	}
 
-	.list-decimal {
-		@apply pl-8 py-2;
+	.instructions {
+		@apply list-decimal list-inside ml-3;
 	}
 
 	input {
@@ -184,7 +213,7 @@
 
 	.confirm {
 		@apply flex flex-col space-y-4 items-center;
-		@apply text-center;
+		@apply text-center my-8;
 	}
 
 	.verify a {

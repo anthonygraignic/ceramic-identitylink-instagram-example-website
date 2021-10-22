@@ -15,7 +15,7 @@
 			</a>
 		</div>
 		<div class="footer__socials">
-			<a href="https://github.com/" rel="external noopener" target="_blank">Github</a>
+			<a href="https://github.com/anthonygraignic/ceramic-identitylink-instagram-example-website" rel="external noopener" target="_blank">Github</a>
 		</div>
 	</footer>
 </div>
@@ -40,6 +40,6 @@
 
 	.footer__brand {
 		@apply flex flex-row space-x-2 items-center;
-		@apply lg:mr-auto lg:ml-0 mx-auto lg:text-left text-center;
+		@apply lg:mr-auto lg:ml-0 lg:text-left text-center;
 	}
 </style>
