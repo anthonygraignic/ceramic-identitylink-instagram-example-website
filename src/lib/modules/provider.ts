@@ -9,6 +9,7 @@ const { EthereumAuthProvider, SelfID, WebClient } = pkg;
 // import { PublicID } from '@self.id/core';
 
 let self = null;
+let did = null;
 let ethereumProvider = null;
 let provider = null;
 
@@ -35,7 +36,7 @@ export async function connectWallet() {
 
 	const authProvider = new EthereumAuthProvider(ethereumProvider, address);
 	console.log(authProvider);
-	const did = await client.authenticate(authProvider, true);
+	did = await client.authenticate(authProvider, true);
 
 	console.log(did);
 
@@ -43,5 +44,5 @@ export async function connectWallet() {
 
 	console.log(self);
 
-	return { provider, ethereumProvider, self };
+	return { provider, ethereumProvider, self, did };
 }

@@ -5,29 +5,34 @@
 <script lang="ts">
 	import OnlyConnected from '$lib/components/OnlyConnected.svelte';
 	import { variables } from '$lib/modules/variables';
-	import { self } from '$lib/modules/wallet';
+	import { self, did } from '$lib/modules/wallet';
 	import { page } from '$app/stores';
 
 	let instagramUsername;
-	let code = page.query?.code || '';
+	let code = $page.query.get('code') || '';
+	let state = $page.query.get('state') || '';
 
 	enum VerificationStep {
 		VERIFY,
-		REQUEST
+		CONFIRM
 	}
 
 	// let step = VerificationStep.REQUEST;
-	let step = code ? VerificationStep.REQUEST : VerificationStep.VERIFY;
+	let step = code ? VerificationStep.CONFIRM : VerificationStep.VERIFY;
 
 	let result;
 	let errorMessage;
 	let loadingRequest = false;
-	async function requestVC() {
+
+	async function confirmInstagram() {
 		try {
 			loadingRequest = true;
+
+			const jws = await $did.createJWS({ challengeCode: state });
+
 			const response = await fetch(`${variables.IDENTITY_LINK_URL}/api/v0/confirm-instagram`, {
 				method: 'post',
-				body: JSON.stringify({ jws: '', code })
+				body: JSON.stringify({ jws, code })
 			});
 			if (!response.ok) {
 				errorMessage = `An error has occured: ${response.status} status code`;
@@ -78,13 +83,13 @@
 						Verify on Instagram</a
 					>
 				</div>
-			{:else if step == VerificationStep.REQUEST}
-				<div class="request">
+			{:else if step == VerificationStep.CONFIRM}
+				<div class="confirm">
 					<p>
-						You successfully authenticated on <b>Instagram</b>, now generate the proof by clicking
+						You successfully authenticated on <b>Instagram</b> 🥳🥳🥳, now generate the proof by clicking
 						on the following button:
 					</p>
-					<button on:click={requestVC}>
+					<button on:click={confirmInstagram}>
 						<div class="generate-button-content">
 							{#if loadingRequest}
 								<svg
@@ -117,13 +122,13 @@
 					{#if result}
 						<p />
 					{/if}
-					{#if errorMessage}
-						<p class="error">{errorMessage}</p>
-					{/if}
 				</div>
 			{/if}
 		</section>
 	</OnlyConnected>
+	{#if errorMessage}
+		<p class="error">{errorMessage}</p>
+	{/if}
 </main>
 
 <style lang="postcss">
@@ -133,6 +138,10 @@
 
 	section {
 		@apply my-4;
+	}
+
+	.list-decimal {
+		@apply pl-8 py-2;
 	}
 
 	input {
@@ -149,7 +158,7 @@
 		@apply grid gap-4 items-center justify-center;
 	}
 
-	.request {
+	.confirm {
 		@apply flex flex-col space-y-4 items-center;
 		@apply text-center;
 	}

@@ -9,6 +9,7 @@ export const connecting = writable(false);
 export const connected = writable(false);
 export const account = writable(null);
 export const self = writable(null);
+export const did = writable(null);
 
 ethereumProvider.subscribe((value) => {
 	if (value) {
@@ -33,6 +34,7 @@ export async function connect() {
 	provider.set(instances.provider);
 	ethereumProvider.set(instances.ethereumProvider);
 	self.set(instances.self);
+	did.set(instances.did);
 
 	await handleChainChanged(instances.ethereumProvider.chainId);
 	await handleAccountsChanged();
