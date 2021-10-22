@@ -135,7 +135,7 @@
 			>
 			that link a decentralized identifier (DID) to your Instagram account on
 			<a href="https://ceramic.network/" rel="external noopener" target="_blank">Ceramic network</a
-			>.
+			>. It is configured on the <b>clay testnet</b> network.
 		</p>
 
 		<h2>Instructions:</h2>
