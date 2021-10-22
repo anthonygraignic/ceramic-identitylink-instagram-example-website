@@ -8,6 +8,7 @@
 	import { self, did } from '$lib/modules/wallet';
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
+	import { decodeJWT } from 'did-jwt';
 
 	let instagramUsername;
 	const code = $page.query.get('code') || '';
@@ -15,7 +16,9 @@
 	// https://developers.facebook.com/docs/instagram-basic-display-api/guides/getting-access-tokens-and-permissions/
 	let state = $page.query.get('state')?.replace('#_', '') || '';
 
-	console.log(state);
+	if (state) {
+		console.log(`Challenge Code: ${state}`);
+	}
 
 	const fbLoginError = $page.query.get('error');
 	const fbLoginErrorReason = $page.query.get('error_reason');
@@ -23,10 +26,10 @@
 
 	enum VerificationStep {
 		VERIFY,
-		CONFIRM
+		CONFIRM,
+		SUCCESS
 	}
 
-	// let step = VerificationStep.REQUEST;
 	let step = code ? VerificationStep.CONFIRM : VerificationStep.VERIFY;
 
 	let result;
@@ -65,12 +68,48 @@
 
 			result = await response.json();
 			console.log(result);
+
+			step = VerificationStep.SUCCESS;
+			await addInstagramAttestation(result.data.attestation);
+			alert(
+				'Congrats, you linked your Instagram account to your 3ID account with a Verifiable Credential.'
+			);
 		} catch (err) {
 			console.error(err);
 			errorMessage = err;
 		} finally {
 			loadingRequest = false;
 		}
+	}
+
+	const INSTAGRAM_HOST = 'instagram.com';
+
+	function getUsernameFromJWTAttestation(attestation: string): string {
+		const decodedJWT = decodeJWT(attestation);
+		return decodedJWT.payload.vc.credentialSubject.account.username;
+	}
+
+	export async function addInstagramAttestation(attestation) {
+		// const accounts = await $self.getSocialAccounts();
+		const accounts = (await $self.client.dataStore.get('alsoKnownAs', $did.id)?.accounts) ?? [];
+		const username = getUsernameFromJWTAttestation(attestation);
+
+		const existing = accounts.find((a) => a.host === INSTAGRAM_HOST && a.id === username);
+		if (existing == null) {
+			accounts.push({
+				protocol: 'https',
+				host: INSTAGRAM_HOST,
+				id: username,
+				attestations: [{ 'did-jwt-vc': attestation }]
+			});
+		} else {
+			existing.attestations = existing.attestations ?? [];
+			existing.attestations.push({ 'did-jwt-vc': attestation });
+		}
+		// await $self.setAlsoKnownAsAccounts({ accounts });
+		await $self.client.dataStore.set('alsoKnownAs', { accounts });
+
+		console.log('Added attestation to AlsoKnownAsAccounts');
 	}
 </script>
 
@@ -135,8 +174,8 @@
 				<h2>Confirm</h2>
 
 				<p>
-					You successfully authenticated on <b>Instagram</b> 🥳🥳🥳, now generate the proof by clicking
-					on the following button:
+					You successfully authenticated on <b>Instagram</b> 👏, now generate the proof by clicking on
+					the following button:
 				</p>
 
 				<div class="confirm">
@@ -172,9 +211,19 @@
 				</div>
 				<p>Your DID: <b>{$self.id}</b></p>
 				<p>Your challenge code: <b>{state}</b></p>
-
+			{:else if step == VerificationStep.SUCCESS}
+				<h2>Success 🥳</h2>
+				<p>
+					We successfully issued a Verifiable Credential that link a decentralized identifier (DID)
+					to your Instagram account on Ceramic network.
+					<br />
+					We added it to your AKA (Also Known As) Accounts.
+				</p>
+				<br />
 				{#if result}
-					<p />
+					<p>
+						Attestation: {result.data.attestation}
+					</p>
 				{/if}
 			{/if}
 		</section>
