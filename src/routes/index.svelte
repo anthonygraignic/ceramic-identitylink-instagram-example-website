@@ -18,6 +18,8 @@
 
 	if (state) {
 		console.log(`Challenge Code: ${state}`);
+	} else {
+		console.log('No challenge code found in URL Query Params, starting at step 1: VERIFY');
 	}
 
 	const fbLoginError = $page.query.get('error');
