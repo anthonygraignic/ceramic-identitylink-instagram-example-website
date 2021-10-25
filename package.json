@@ -31,8 +31,7 @@
 		"@datamodels/identity-accounts-crypto": "^0.1.2",
 		"@datamodels/identity-accounts-web": "^0.1.2",
 		"@datamodels/identity-profile-basic": "^0.1.2",
-		"@sveltejs/adapter-netlify": "^1.0.0-next.34",
-		"@sveltejs/adapter-static": "^1.0.0-next.20",
+		"@sveltejs/adapter-node": "^1.0.0-next.0",
 		"@sveltejs/kit": "next",
 		"@typescript-eslint/eslint-plugin": "^4.33.0",
 		"@typescript-eslint/parser": "^4.33.0",
@@ -58,6 +57,7 @@
 		"@self.id/web": "^0.1.0",
 		"dids": "^2.4.0",
 		"ethers": "^5.5.1",
-		"key-did-resolver": "^1.4.0"
+		"key-did-resolver": "^1.4.0",
+		"near-api-js": "^0.43.1"
 	}
 }

@@ -1,0 +1,63 @@
+# Borrowed from https://blog.callr.tech/building-docker-images-with-gitlab-ci-best-practices/
+image: docker:20
+
+stages:
+  - build
+  - push
+  # - deploy
+
+services:
+  - docker:dind
+
+before_script:
+  - echo "$CI_REGISTRY_PASSWORD" |docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+
+# Use classic build (no dind) as the merge commit make the a new commit thus a new Docker image
+build:
+  stage: build
+  image: node:14.16.0-buster
+  except:
+    - main
+  before_script:
+    - curl -f https://get.pnpm.io/v6.7.js | node - add --global pnpm@6
+    - pnpm config set store-dir .pnpm-store
+  script:
+    - pnpm install # install dependencies
+    - pnpm build
+  cache:
+    key: '$CI_COMMIT_REF_SLUG'
+    paths:
+      - .pnpm-store
+
+docker-build:
+  stage: build
+  only:
+    - main
+  script:
+    - touch .env
+    - echo "VITE_CERAMIC=$VITE_CERAMIC" >> .env
+    - echo "VITE_CERAMIC_CONNECT_NETWORK=$VITE_CERAMIC_CONNECT_NETWORK" >> .env
+    - echo "VITE_IDENTITY_LINK_URL=$VITE_IDENTITY_LINK_URL" >> .env
+    - >
+      docker build
+      --pull
+      --build-arg VCS_REF=$CI_COMMIT_SHA
+      --build-arg VCS_URL=$CI_PROJECT_URL
+      -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
+      .
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
+    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE:testnet
+    - docker push $CI_REGISTRY_IMAGE:testnet
+
+push-tag:
+  variables:
+    # Again, we do not need the source code here. Just playing with Docker.
+    GIT_STRATEGY: none
+  stage: push
+  only:
+    # We want this job to be run on tags only.
+    - tags
+  script:
+    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
