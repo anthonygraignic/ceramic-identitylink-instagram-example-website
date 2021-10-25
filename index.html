@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<link rel="icon" href="/favicon.png" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<title>Ceramic Identity Link - Instagram</title>
+
+		
+
+		<link rel="modulepreload" href="/_app/start-03ab119b.js">
+		<link rel="modulepreload" href="/_app/chunks/vendor-488d1913.js">
+		<link rel="modulepreload" href="/_app/pages/__layout.svelte-12dfe2e4.js">
+		<link rel="modulepreload" href="/_app/chunks/ConnectButton-24cfc218.js">
+		<link rel="modulepreload" href="/_app/pages/index.svelte-4ec88f64.js">
+		<link rel="stylesheet" href="/_app/assets/start-464e9d0a.css">
+		<link rel="stylesheet" href="/_app/assets/pages/__layout.svelte-72e08815.css">
+		<link rel="stylesheet" href="/_app/assets/ConnectButton-b44203dd.css">
+		<link rel="stylesheet" href="/_app/assets/pages/index.svelte-e73c9f8a.css">
+
+		<script type="module">
+			import { start } from "/_app/start-03ab119b.js";
+			start({
+				target: document.querySelector("#svelte"),
+				paths: {"base":"","assets":""},
+				session: {},
+				host: location.host,
+				route: true,
+				spa: false,
+				trailing_slash: "never",
+				hydrate: {
+					status: 200,
+					error: null,
+					nodes: [
+						import("/_app/pages/__layout.svelte-12dfe2e4.js"),
+						import("/_app/pages/index.svelte-4ec88f64.js")
+					],
+					page: {
+						host: location.host, // TODO this is redundant
+						path: "\u002F",
+						query: new URLSearchParams(""),
+						params: {}
+					}
+				}
+			});
+		</script>
+</head>
+
+<body>
+	<div id="svelte">
+
+
+<div class="header__container svelte-h7q4f2"><header class="svelte-h7q4f2"><div class="svelte-h7q4f2"><a sveltekit:prefetch href="/" aria-current class="svelte-h7q4f2"><b>Ceramic Identity Link - Instagram</b></a>
+			<nav class="svelte-h7q4f2"><ul class="menu__primary svelte-h7q4f2"></ul></nav></div>
+		<button >Connect
+</button></header>
+</div>
+
+
+<main class="svelte-ktq9ns"><section class="svelte-ktq9ns"><h1>Verify your Instagram account through <a href="https://github.com/ceramicstudio/identitylink-services" rel="external noopener" target="_blank">Identity Link Services</a></h1>
+
+		<p>This project is an example of how you can issue a <a href="https://www.w3.org/TR/vc-data-model/" rel="external noopener" target="_blank">verifiable credential</a>
+			that link a decentralized identifier (DID) to your Instagram account on
+			<a href="https://ceramic.network/" rel="external noopener" target="_blank">Ceramic network</a>. It is configured on the <b>clay testnet</b> network.
+		</p>
+
+		<h2>Instructions:</h2>
+		<ol class="instructions svelte-ktq9ns"><li>Connect with Metamask and 3ID</li>
+			<li>Click on the button to authorize our app to access your Instagram account (you will be
+				redirected to Instagram Log In).
+			</li>
+			<li>Authorize our app (read-only access), you will be redirected to this same page.</li>
+			<li>Connect again and generate your verifiable credential by clicking on the button</li></ol></section>
+
+	<div class="only-connected svelte-fro8eb"><button >Connect
+</button></div>
+	
+</main>
+<div class="footer__container svelte-q9ajla"><footer class="svelte-q9ajla"><div class="footer__brand svelte-q9ajla"><p class="svelte-q9ajla">Made by <a href="https://twitter.com/agraignic" rel="external noopener" target="_blank">@agraignic</a>
+				with
+			</p>
+			<a href="https://ceramic.network/" rel="external noopener" target="_blank" class="svelte-q9ajla"><img src="logo-ceramic.png" alt="Ceramic" class="logo svelte-q9ajla"></a></div>
+		<div class="footer__socials"><a href="https://github.com/anthonygraignic/ceramic-identitylink-instagram-example-website" rel="external noopener" target="_blank">Github</a></div></footer>
+</div>
+
+
+
+			
+		</div>
+	<!-- UGLY FIX -->
+	<script>window.global = window;</script>
+</body>
+
+</html>
