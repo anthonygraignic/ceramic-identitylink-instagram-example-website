@@ -15,6 +15,9 @@ const config = {
 		adapter: adapter(),
 		target: '#svelte',
 		vite: {
+			optimizeDeps: {
+				exclude: ['near-api-js']
+			},
 			ssr: {
 				noExternal: ['@self.id/web']
 			}
