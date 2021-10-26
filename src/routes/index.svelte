@@ -11,16 +11,10 @@
 	import { decodeJWT } from 'did-jwt';
 
 	let instagramUsername;
-	const code = $page.query.get('code') || '';
+	let code = $page.query.get('code') || '';
 	// remove '#_' additional at end of URI (challengeCode is only alpha numeric, no special char so it's safe!)
 	// https://developers.facebook.com/docs/instagram-basic-display-api/guides/getting-access-tokens-and-permissions/
 	let state = $page.query.get('state')?.replace('#_', '') || '';
-
-	if (state) {
-		console.log(`Challenge Code: ${state}`);
-	} else {
-		console.log('No challenge code found in URL Query Params, starting at step 1: VERIFY');
-	}
 
 	const fbLoginError = $page.query.get('error');
 	const fbLoginErrorReason = $page.query.get('error_reason');
@@ -41,6 +35,21 @@
 	onMount(() => {
 		if (fbLoginError) {
 			errorMessage = `Facebook Login Error: ${fbLoginError}, ${fbLoginErrorReason}, ${fbLoginErrorDescription}`;
+		}
+
+		const query = new URLSearchParams(document.location.search);
+
+		if (query.has('code')) {
+			code = query.get('code') || '';
+		}
+		if (query.has('state')) {
+			state = query.get('state')?.replace('#_', '') || '';
+		}
+
+		if (state) {
+			console.log(`Challenge Code: ${state}`);
+		} else {
+			console.log('No challenge code found in URL Query Params, starting at step 1: VERIFY');
 		}
 	});
 
