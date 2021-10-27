@@ -26,7 +26,7 @@
 		SUCCESS
 	}
 
-	let step = code ? VerificationStep.CONFIRM : VerificationStep.VERIFY;
+	let step = code && state ? VerificationStep.CONFIRM : VerificationStep.VERIFY;
 
 	let result;
 	let errorMessage;
@@ -51,6 +51,8 @@
 		} else {
 			console.log('No challenge code found in URL Query Params, starting at step 1: VERIFY');
 		}
+
+		step = code && state ? VerificationStep.CONFIRM : VerificationStep.VERIFY;
 	});
 
 	async function confirmInstagram() {
